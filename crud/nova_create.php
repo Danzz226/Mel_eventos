@@ -1,5 +1,11 @@
 <?php
 include "../connection.php";
+session_start();
+if (!isset($_SESSION['usuario_id'])) {
+    header("Location: ../login.php");
+    exit;
+}
+
 
 // Verifica se os campos obrigatórios foram enviados
 if (

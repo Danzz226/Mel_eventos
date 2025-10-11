@@ -1,6 +1,13 @@
 <?php
 include "../connection.php";
 
+session_start();
+if (!isset($_SESSION['usuario_id'])) {
+    header("Location: ../login.php");
+    exit;
+}
+
+
 if (!empty($_POST['id_reserva']) &&
     !empty($_POST['id_salao']) &&
     !empty($_POST['data_evento_inicio']) &&

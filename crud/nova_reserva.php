@@ -1,10 +1,31 @@
 <?php
+session_start();
 include "../connection.php";
 
-// Buscar salões
-$saloes = $conn->query("SELECT id_salao, nome FROM Salao ORDER BY nome ASC");
-?>
+// Impede acesso sem login
+if (!isset($_SESSION['usuario_id'])) {
+    header("Location: ../login.php");
+    exit;
+}
 
+// Buscar salões existentes
+$saloes = $conn->query("SELECT id_salao, nome FROM Salao ORDER BY nome ASC");
+
+// Caso não existam, cria alguns de exemplo
+if ($saloes->num_rows == 0) {
+    $conn->query("INSERT INTO Salao (nome, descricao, capacidade_max, status) VALUES
+        ('Salão Principal', 'Espaço amplo para grandes eventos', 300, 'ativo'),
+        ('Salão de Festas Kids', 'Espaço para festas infantis', 80, 'ativo'),
+        ('Salão VIP', 'Espaço exclusivo e reservado', 50, 'ativo')
+    ");
+    $saloes = $conn->query("SELECT id_salao, nome FROM Salao ORDER BY nome ASC");
+}
+
+// Dados do usuário logado
+$usuario_nome = $_SESSION['usuario_nome'];
+$usuario_email = $_SESSION['usuario_email'];
+$usuario_id = $_SESSION['usuario_id'];
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -26,12 +47,29 @@ $saloes = $conn->query("SELECT id_salao, nome FROM Salao ORDER BY nome ASC");
         }
         button:hover { background-color: #0056b3; }
         .total { font-size: 18px; font-weight: bold; margin-top: 15px; }
+        .top-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px;
+        }
+        .logout {
+            background: #dc3545; padding: 8px 12px; border-radius: 5px;
+            color: white; text-decoration: none;
+        }
+        .logout:hover { background: #b02a37; }
     </style>
 </head>
 <body>
-    <h2>Fazer Nova Reserva</h2>
+    <div class="top-bar">
+        <h2>Nova Reserva</h2>
+        <div>
+            👤 <?= htmlspecialchars($usuario_nome) ?> |
+            <a href="../logout.php" class="logout">Sair</a>
+        </div>
+    </div>
 
     <form action="nova_create.php" method="POST" id="formReserva">
+        <input type="hidden" name="id_usuario" value="<?= $usuario_id ?>">
+
         <!-- Seleção do Salão -->
         <label for="id_salao">Selecione o Salão</label>
         <select name="id_salao" id="id_salao" required>
@@ -42,11 +80,11 @@ $saloes = $conn->query("SELECT id_salao, nome FROM Salao ORDER BY nome ASC");
         </select>
 
         <!-- Nome e email do usuário -->
-        <label for="nome_usuario">Nome do Usuário</label>
-        <input type="text" name="nome_usuario" id="nome_usuario" required>
+        <label>Nome do Usuário</label>
+        <input type="text" value="<?= htmlspecialchars($usuario_nome) ?>" readonly>
 
-        <label for="email_usuario">Email do Usuário</label>
-        <input type="email" name="email_usuario" id="email_usuario" required>
+        <label>Email do Usuário</label>
+        <input type="email" value="<?= htmlspecialchars($usuario_email) ?>" readonly>
 
         <!-- Datas -->
         <label for="data_evento_inicio">Data Início do Evento</label>
@@ -54,6 +92,7 @@ $saloes = $conn->query("SELECT id_salao, nome FROM Salao ORDER BY nome ASC");
 
         <label for="data_evento_fim">Data Fim do Evento</label>
         <input type="datetime-local" name="data_evento_fim" id="data_evento_fim" required>
+        <div id="erroData" style="color:red; display:none;">⚠️ A data de fim não pode ser menor que a de início!</div>
 
         <!-- Número de participantes -->
         <label for="numero_participantes_est">Número Estimado de Participantes</label>
@@ -78,15 +117,34 @@ $saloes = $conn->query("SELECT id_salao, nome FROM Salao ORDER BY nome ASC");
     </form>
 
     <script>
+        const inicio = document.getElementById("data_evento_inicio");
+        const fim = document.getElementById("data_evento_fim");
+        const erroData = document.getElementById("erroData");
+
+        inicio.addEventListener("change", () => {
+            fim.min = inicio.value;
+            validarDatas();
+        });
+
+        fim.addEventListener("change", validarDatas);
+
+        function validarDatas() {
+            if (inicio.value && fim.value && fim.value < inicio.value) {
+                erroData.style.display = "block";
+                fim.value = "";
+            } else {
+                erroData.style.display = "none";
+            }
+        }
+
         function calcularTotal() {
             let convidados = parseInt(document.getElementById("numero_participantes_est").value) || 0;
-
-            let inicio = new Date(document.getElementById("data_evento_inicio").value);
-            let fim = new Date(document.getElementById("data_evento_fim").value);
+            let dataInicio = new Date(inicio.value);
+            let dataFim = new Date(fim.value);
             let dias = 1;
 
-            if (!isNaN(inicio) && !isNaN(fim) && fim > inicio) {
-                let diff = Math.ceil((fim - inicio) / (1000 * 60 * 60 * 24));
+            if (!isNaN(dataInicio) && !isNaN(dataFim) && dataFim > dataInicio) {
+                let diff = Math.ceil((dataFim - dataInicio) / (1000 * 60 * 60 * 24));
                 dias = diff > 0 ? diff + 1 : 1;
             }
 
@@ -103,8 +161,7 @@ $saloes = $conn->query("SELECT id_salao, nome FROM Salao ORDER BY nome ASC");
             });
 
             // Valor base do salão (exemplo: 2000 por dia)
-            let valorSalao = 2000 * dias;
-            total += valorSalao;
+            total += 2000 * dias;
 
             // Multiplicador de convidados (exemplo +10 por convidado)
             total += convidados * 10;

@@ -1,6 +1,13 @@
 <?php
 include "../connection.php";
 
+session_start();
+if (!isset($_SESSION['usuario_id'])) {
+    header("Location: ../login.php");
+    exit;
+}
+
+
 // Verifica se o ID foi passado
 if (!isset($_GET['id']) || empty($_GET['id'])) {
     die("⚠️ ID da reserva não informado.");
