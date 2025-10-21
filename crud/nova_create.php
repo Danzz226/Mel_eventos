@@ -1,22 +1,20 @@
 <?php
 include "../connection.php";
 session_start();
+
 if (!isset($_SESSION['usuario_id'])) {
     header("Location: ../login.php");
     exit;
 }
 
-
 // Verifica se os campos obrigatórios foram enviados
 if (
-    !empty($_POST['nome_usuario']) &&
-    !empty($_POST['email_usuario']) &&
+    !empty($_POST['id_usuario']) &&
     !empty($_POST['id_salao']) &&
     !empty($_POST['data_evento_inicio']) &&
     !empty($_POST['numero_participantes_est'])
 ) {
-    $nome_usuario = $_POST['nome_usuario'];
-    $email_usuario = $_POST['email_usuario'];
+    $id_usuario = $_POST['id_usuario'];
     $id_salao = $_POST['id_salao'];
     $data_evento_inicio = $_POST['data_evento_inicio'];
     $data_evento_fim = !empty($_POST['data_evento_fim']) ? $_POST['data_evento_fim'] : null;
@@ -26,28 +24,7 @@ if (
 
     $status = 'pendente';
 
-    // Verificar se usuário já existe
-    $sqlUser = "SELECT id_usuario FROM Usuario WHERE email = ?";
-    $stmtUser = $conn->prepare($sqlUser);
-    $stmtUser->bind_param("s", $email_usuario);
-    $stmtUser->execute();
-    $resultUser = $stmtUser->get_result();
-
-    if ($resultUser->num_rows > 0) {
-        $row = $resultUser->fetch_assoc();
-        $id_usuario = $row['id_usuario'];
-    } else {
-        // Criar novo usuário
-        $sqlInsertUser = "INSERT INTO Usuario (nome, email, ativo) VALUES (?, ?, 1)";
-        $stmtInsert = $conn->prepare($sqlInsertUser);
-        $stmtInsert->bind_param("ss", $nome_usuario, $email_usuario);
-        $stmtInsert->execute();
-        $id_usuario = $stmtInsert->insert_id;
-        $stmtInsert->close();
-    }
-    $stmtUser->close();
-
-    // Inserir reserva
+    // Insere nova reserva
     $sqlReserva = "INSERT INTO Reserva (
             id_usuario,
             id_salao,
@@ -61,7 +38,7 @@ if (
 
     $stmtReserva = $conn->prepare($sqlReserva);
     $stmtReserva->bind_param(
-        "issisdsi",
+        "issisdss",
         $id_usuario,
         $id_salao,
         $data_evento_inicio,

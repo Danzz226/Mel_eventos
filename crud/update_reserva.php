@@ -1,30 +1,33 @@
 <?php
+session_start();
 include "../connection.php";
 
-session_start();
 if (!isset($_SESSION['usuario_id'])) {
     header("Location: ../login.php");
     exit;
 }
 
-
-if (!empty($_POST['id_reserva']) &&
-    !empty($_POST['id_salao']) &&
-    !empty($_POST['data_evento_inicio']) &&
-    !empty($_POST['numero_participantes_est']) &&
-    !empty($_POST['status'])) {
-
+if (
+    isset($_POST['id_reserva']) &&
+    isset($_POST['id_salao']) &&
+    isset($_POST['data_evento_inicio']) &&
+    isset($_POST['data_evento_fim']) &&
+    isset($_POST['numero_participantes_est']) &&
+    isset($_POST['observacoes']) &&
+    isset($_POST['total_previsto']) &&
+    isset($_POST['status'])
+) {
     $id_reserva = $_POST['id_reserva'];
     $id_salao = $_POST['id_salao'];
     $data_evento_inicio = $_POST['data_evento_inicio'];
-    $data_evento_fim = !empty($_POST['data_evento_fim']) ? $_POST['data_evento_fim'] : null;
+    $data_evento_fim = $_POST['data_evento_fim'];
     $numero_participantes_est = $_POST['numero_participantes_est'];
-    $observacoes = !empty($_POST['observacoes']) ? $_POST['observacoes'] : '';
-    $total_previsto = !empty($_POST['total_previsto']) ? $_POST['total_previsto'] : 0.00;
+    $observacoes = $_POST['observacoes'];
+    $total_previsto = $_POST['total_previsto'];
     $status = $_POST['status'];
 
-    $sql = "UPDATE Reserva 
-            SET id_salao = ?, 
+    $sql = "UPDATE Reserva SET 
+                id_salao = ?, 
                 data_evento_inicio = ?, 
                 data_evento_fim = ?, 
                 numero_participantes_est = ?, 
@@ -34,10 +37,8 @@ if (!empty($_POST['id_reserva']) &&
             WHERE id_reserva = ?";
 
     $stmt = $conn->prepare($sql);
-
-    // bind_param corrigido
     $stmt->bind_param(
-        "issisdsi", 
+        "issisdsi",
         $id_salao,
         $data_evento_inicio,
         $data_evento_fim,
@@ -49,15 +50,12 @@ if (!empty($_POST['id_reserva']) &&
     );
 
     if ($stmt->execute()) {
-        echo "✅ Reserva atualizada com sucesso!";
-        echo "<br><a href='list_reservas.php'>Voltar à lista</a>";
+        header("Location: list_reservas.php");
+        exit;
     } else {
         echo "❌ Erro ao atualizar reserva: " . $stmt->error;
     }
-
-    $stmt->close();
-
 } else {
-    echo "⚠️ Preencha todos os campos obrigatórios.";
+    echo "⚠️ Dados incompletos para atualização.";
 }
 ?>

@@ -11,7 +11,7 @@ if (!isset($_SESSION['usuario_id'])) {
 // Buscar salões existentes
 $saloes = $conn->query("SELECT id_salao, nome FROM Salao ORDER BY nome ASC");
 
-// Caso não existam, cria alguns de exemplo
+// Caso não existam, cria alguns exemplos
 if ($saloes->num_rows == 0) {
     $conn->query("INSERT INTO Salao (nome, descricao, capacidade_max, status) VALUES
         ('Salão Principal', 'Espaço amplo para grandes eventos', 300, 'ativo'),
@@ -23,7 +23,6 @@ if ($saloes->num_rows == 0) {
 
 // Dados do usuário logado
 $usuario_nome = $_SESSION['usuario_nome'];
-$usuario_email = $_SESSION['usuario_email'];
 $usuario_id = $_SESSION['usuario_id'];
 ?>
 <!DOCTYPE html>
@@ -79,12 +78,10 @@ $usuario_id = $_SESSION['usuario_id'];
             <?php endwhile; ?>
         </select>
 
-        <!-- Nome e email do usuário -->
+        <!-- Nome do Usuário -->
         <label>Nome do Usuário</label>
         <input type="text" value="<?= htmlspecialchars($usuario_nome) ?>" readonly>
-
-        <label>Email do Usuário</label>
-        <input type="email" value="<?= htmlspecialchars($usuario_email) ?>" readonly>
+        <input type="hidden" name="nome_usuario" value="<?= htmlspecialchars($usuario_nome) ?>">
 
         <!-- Datas -->
         <label for="data_evento_inicio">Data Início do Evento</label>
@@ -150,7 +147,6 @@ $usuario_id = $_SESSION['usuario_id'];
 
             let total = 0;
 
-            // Buffet cobra por convidado
             document.querySelectorAll('input[name="servicos[]"]:checked').forEach(serv => {
                 let preco = parseFloat(serv.getAttribute("data-preco"));
                 if (serv.value === "buffet") {
@@ -160,11 +156,8 @@ $usuario_id = $_SESSION['usuario_id'];
                 }
             });
 
-            // Valor base do salão (exemplo: 2000 por dia)
-            total += 2000 * dias;
-
-            // Multiplicador de convidados (exemplo +10 por convidado)
-            total += convidados * 10;
+            total += 2000 * dias; // valor base diário do salão
+            total += convidados * 10; // custo adicional por convidado
 
             document.getElementById("total").innerText = total.toFixed(2);
             document.getElementById("total_previsto").value = total.toFixed(2);

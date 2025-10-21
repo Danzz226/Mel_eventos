@@ -1,31 +1,27 @@
 <?php
+session_start();
 include "../connection.php";
 
-session_start();
 if (!isset($_SESSION['usuario_id'])) {
     header("Location: ../login.php");
     exit;
 }
 
+if (isset($_GET['id'])) {
+    $id = intval($_GET['id']);
+    $usuario_id = $_SESSION['usuario_id'];
 
-// Verifica se o ID foi passado
-if (!isset($_GET['id']) || empty($_GET['id'])) {
-    die("⚠️ ID da reserva não informado.");
-}
+    // Deleta apenas reservas do usuário logado
+    $stmt = $conn->prepare("DELETE FROM Reserva WHERE id_reserva = ? AND id_usuario = ?");
+    $stmt->bind_param("ii", $id, $usuario_id);
 
-$id_reserva = $_GET['id'];
-
-// Preparar e executar exclusão
-$sql = "DELETE FROM Reserva WHERE id_reserva = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $id_reserva);
-
-if ($stmt->execute()) {
-    echo "✅ Reserva excluída com sucesso!";
-    echo "<br><a href='list_reservas.php'>Voltar à lista</a>";
+    if ($stmt->execute()) {
+        header("Location: list_reservas.php");
+        exit;
+    } else {
+        echo "❌ Erro ao excluir reserva.";
+    }
 } else {
-    echo "❌ Erro ao excluir reserva: " . $stmt->error;
+    echo "⚠️ ID inválido.";
 }
-
-$stmt->close();
 ?>
