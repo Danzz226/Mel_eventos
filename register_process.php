@@ -1,5 +1,5 @@
 <?php
-include "connection.php";
+include "conexao.php";
 
 if (!empty($_POST['nome']) && !empty($_POST['senha']) && !empty($_POST['confirmar_senha'])) {
     $nome = trim($_POST['nome']);
@@ -12,30 +12,22 @@ if (!empty($_POST['nome']) && !empty($_POST['senha']) && !empty($_POST['confirma
     }
 
     // Verifica se nome já existe
-    $check = $conn->prepare("SELECT id_usuario FROM Usuario WHERE nome = ?");
-    $check->bind_param("s", $nome);
-    $check->execute();
-    $check->store_result();
+    $check_sql = "SELECT id_usuario FROM usuario WHERE nome = '$nome'";
+    $check_result = $conn->query($check_sql);
 
-    if ($check->num_rows > 0) {
+    if ($check_result->num_rows > 0) {
         header("Location: register.php?msg=Usuário já existe");
         exit;
     }
-    $check->close();
 
-    $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
+    // Inserir usuário (senha simples para compatibilidade)
+    $sql = "INSERT INTO usuario (nome, senha, ativo) VALUES ('$nome', '$senha', 1)";
 
-    $sql = "INSERT INTO Usuario (nome, senha, ativo) VALUES (?, ?, 1)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ss", $nome, $senha_hash);
-
-    if ($stmt->execute()) {
+    if ($conn->query($sql)) {
         header("Location: register.php?msg=Cadastro realizado com sucesso!");
     } else {
-        header("Location: register.php?msg=Erro ao cadastrar usuário");
+        header("Location: register.php?msg=Erro ao cadastrar usuário: " . mysqli_error($conn));
     }
-
-    $stmt->close();
 } else {
     header("Location: register.php?msg=Preencha todos os campos");
 }
