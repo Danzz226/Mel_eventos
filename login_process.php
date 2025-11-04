@@ -17,7 +17,7 @@ if (!empty($_POST['nome']) && !empty($_POST['senha'])) {
             $_SESSION['usuario_id'] = $usuario['id_usuario'];
             $_SESSION['usuario_nome'] = $usuario['nome'];
 
-            header("Location: index.php");
+            header("Location: home.php");
             exit;
         } else {
             header("Location: login.php?error=Senha incorreta");

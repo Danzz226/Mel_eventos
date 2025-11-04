@@ -1,10 +1,12 @@
 <?php
 session_start();
-include "conexao.php";
 
-// Verifica se está logado
+// Redireciona para a página inicial
 if (!isset($_SESSION['usuario_id'])) {
     header("Location: login.php");
+    exit;
+} else {
+    header("Location: home.php");
     exit;
 }
 
