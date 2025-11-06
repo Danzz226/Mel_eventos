@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (isset($_SESSION['usuario_id'])) {
-    header("Location: index.php");
+    header("Location: home.php");
     exit;
 }
 ?>
@@ -10,15 +10,15 @@ if (isset($_SESSION['usuario_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro - Mel Eventos</title>
+    <title>Cadastro - EventHub</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body class="d-flex">
     <form action="register_process.php" method="POST">
-        <h2>📝 Criar Conta - Mel Eventos</h2>
+        <h2>📝 Criar Conta - EventHub</h2>
 
         <?php if (isset($_GET['msg'])): ?>
             <p class="<?= strpos($_GET['msg'], 'sucesso') !== false ? 'success' : 'error' ?>">
@@ -43,3 +43,4 @@ if (isset($_SESSION['usuario_id'])) {
     </form>
 </body>
 </html>
+

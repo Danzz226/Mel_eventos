@@ -1,6 +1,6 @@
 <?php
 session_start();
-include "conexao.php";
+include "../includes/conexao.php";
 
 // Verifica se está logado
 if (!isset($_SESSION['usuario_id'])) {
@@ -15,18 +15,18 @@ $usuario_nome = $_SESSION['usuario_nome'];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mel Eventos - Página Inicial</title>
+    <title>EventHub - Página Inicial</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
     <!-- Navegação Superior -->
     <nav class="navbar">
         <div class="container">
             <div class="nav-brand">
-                <h1>🎉 Mel Eventos</h1>
+                <h1>🎉 EventHub</h1>
             </div>
             <ul class="nav-menu">
                 <li><a href="#inicio" class="nav-link">Início</a></li>
@@ -45,9 +45,9 @@ $usuario_nome = $_SESSION['usuario_nome'];
     <section id="inicio" class="hero">
         <div class="container">
             <div class="hero-content">
-                <h2 class="hero-title">Bem-vindo ao Mel Eventos</h2>
+                <h2 class="hero-title">Bem-vindo ao EventHub</h2>
                 <p class="hero-subtitle">Sua plataforma completa para gerenciar eventos inesquecíveis</p>
-                <a href="gerenciar_eventos.php" class="btn-primary">Gerenciar Eventos</a>
+                <a href="../crud_operations/gerenciar_eventos.php" class="btn-primary">Gerenciar Eventos</a>
             </div>
         </div>
     </section>
@@ -78,26 +78,34 @@ $usuario_nome = $_SESSION['usuario_nome'];
         <div class="container">
             <h2 class="section-title">Nossos Serviços</h2>
             <div class="services-grid">
-                <div class="service-card">
-                    <div class="service-icon">🏛️</div>
-                    <h3>Reserva de Salões</h3>
-                    <p>Escolha entre diversos salões disponíveis, com diferentes capacidades e ambientes.</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">📅</div>
-                    <h3>Planejamento de Eventos</h3>
-                    <p>Gerencie datas, horários e detalhes do seu evento de forma simples e organizada.</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">💰</div>
-                    <h3>Cálculo de Custos</h3>
-                    <p>Sistema automático de cálculo de valores com base em serviços e participantes.</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">📊</div>
-                    <h3>Gestão Completa</h3>
-                    <p>Acompanhe todas as suas reservas, edite informações e mantenha tudo organizado.</p>
-                </div>
+                <a href="../services/saloes.php" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-icon">🏛️</div>
+                        <h3>Reserva de Salões</h3>
+                        <p>Escolha entre diversos salões disponíveis, com diferentes capacidades e ambientes.</p>
+                    </div>
+                </a>
+                <a href="../services/planejamento.php" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-icon">📅</div>
+                        <h3>Planejamento de Eventos</h3>
+                        <p>Gerencie datas, horários e detalhes do seu evento de forma simples e organizada.</p>
+                    </div>
+                </a>
+                <a href="../services/calculo.php" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-icon">💰</div>
+                        <h3>Cálculo de Custos</h3>
+                        <p>Sistema automático de cálculo de valores com base em serviços e participantes.</p>
+                    </div>
+                </a>
+                <a href="../services/gestao.php" class="service-card-link">
+                    <div class="service-card">
+                        <div class="service-icon">📊</div>
+                        <h3>Gestão Completa</h3>
+                        <p>Acompanhe todas as suas reservas, edite informações e mantenha tudo organizado.</p>
+                    </div>
+                </a>
             </div>
         </div>
     </section>
@@ -112,7 +120,7 @@ $usuario_nome = $_SESSION['usuario_nome'];
                         <span class="contact-icon">📧</span>
                         <div>
                             <h4>E-mail</h4>
-                            <p>contato@meleventos.com.br</p>
+                            <p>contato@eventhub.com.br</p>
                         </div>
                     </div>
                     <div class="contact-item">
@@ -133,7 +141,7 @@ $usuario_nome = $_SESSION['usuario_nome'];
                 <div class="contact-cta">
                     <h3>Pronto para começar?</h3>
                     <p>Gerencie seus eventos agora mesmo!</p>
-                    <a href="gerenciar_eventos.php" class="btn-primary">Gerenciar Eventos</a>
+                    <a href="../crud_operations/gerenciar_eventos.php" class="btn-primary btn-contact">Gerenciar Eventos</a>
                 </div>
             </div>
         </div>
@@ -142,11 +150,11 @@ $usuario_nome = $_SESSION['usuario_nome'];
     <!-- Rodapé -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2025 Mel Eventos. Todos os direitos reservados.</p>
+            <p>&copy; 2025 EventHub. Todos os direitos reservados.</p>
         </div>
     </footer>
 
-    <script src="assets/js/main.js"></script>
+    <script src="../assets/js/main.js"></script>
 </body>
 </html>
 

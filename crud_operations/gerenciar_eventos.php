@@ -1,10 +1,10 @@
 <?php
 session_start();
-include "conexao.php";
+include "../includes/conexao.php";
 
 // Verifica se está logado
 if (!isset($_SESSION['usuario_id'])) {
-    header("Location: login.php");
+    header("Location: ../pages/login.php");
     exit;
 }
 
@@ -29,24 +29,24 @@ if ($saloes->num_rows == 0) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciar Eventos - Mel Eventos</title>
+    <title>Gerenciar Eventos - EventHub</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
     <!-- Navegação Superior -->
     <nav class="navbar">
         <div class="container">
             <div class="nav-brand">
-                <h1>🎉 Mel Eventos</h1>
+                <h1>🎉 EventHub</h1>
             </div>
             <ul class="nav-menu">
-                <li><a href="home.php" class="nav-link">Voltar ao Início</a></li>
+                <li><a href="../pages/home.php" class="nav-link">Voltar ao Início</a></li>
                 <li class="user-info">
                     <span>👤 <?= htmlspecialchars($usuario_nome) ?></span>
-                    <a href="logout.php" class="btn-logout">Sair</a>
+                    <a href="../pages/logout.php" class="btn-logout">Sair</a>
                 </li>
             </ul>
         </div>
@@ -127,66 +127,20 @@ if ($saloes->num_rows == 0) {
                 </form>
             </section>
 
-            <hr class="divider">
-
-            <!-- Listagem de Reservas -->
-            <section class="list-section">
-                <h2>Minhas Reservas</h2>
-                <div class="table-container">
-                    <table class="table-reservas">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Salão</th>
-                                <th>Data Início</th>
-                                <th>Status</th>
-                                <th>Total (R$)</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php 
-                            $sql = "SELECT 
-                                        r.id_reserva,
-                                        s.nome AS salao_nome,
-                                        r.data_evento_inicio,
-                                        r.status,
-                                        r.total_previsto
-                                    FROM Reserva r
-                                    JOIN Salao s ON r.id_salao = s.id_salao
-                                    WHERE r.id_usuario = $usuario_id
-                                    ORDER BY r.data_evento_inicio DESC";
-
-                            $result = $conn->query($sql);
-                            
-                            if ($result->num_rows > 0) {
-                                while ($row = $result->fetch_assoc()) {
-                                    echo "
-                                    <tr>
-                                        <td>".$row['id_reserva']."</td>
-                                        <td>".htmlspecialchars($row['salao_nome'])."</td>
-                                        <td>".date("d/m/Y H:i", strtotime($row['data_evento_inicio']))."</td>
-                                        <td><span class='status-badge status-".$row['status']."'>".htmlspecialchars($row['status'])."</span></td>
-                                        <td>".number_format($row['total_previsto'], 2, ',', '.')."</td>
-                                        <td>
-                                            <a href='edit_reserva.php?id=".$row['id_reserva']."' class='btn-action btn-edit'>✏️ Editar</a>
-                                            <a href='delete_reserva.php?id=".$row['id_reserva']."' class='btn-action btn-delete' onclick='return confirm(\"Excluir esta reserva?\")'>🗑️ Excluir</a>
-                                        </td>
-                                    </tr>
-                                    ";
-                                }
-                            } else {
-                                echo "<tr><td colspan='6' class='no-data'>Nenhuma reserva foi cadastrada!</td></tr>";
-                            }
-                            ?>
-                        </tbody>
-                    </table>
+            <!-- Área Executiva -->
+            <section class="form-section" style="margin-top: 2rem;">
+                <h2>👔 Área Executiva</h2>
+                <div style="text-align: center; padding: 1.5rem;">
+                    <p style="margin-bottom: 1.5rem; color: var(--secondary-color);">
+                        Acesse a área executiva para visualizar, editar e gerenciar todas as reservas do sistema.
+                    </p>
+                    <a href="../admin/login.php" class="btn-primary" style="display: inline-block; padding: 1rem 2.5rem; font-size: 1.1rem;">Acessar Área Executiva</a>
                 </div>
             </section>
         </div>
     </main>
 
-    <script src="assets/js/reservas.js"></script>
+    <script src="../assets/js/reservas.js"></script>
 </body>
 </html>
 

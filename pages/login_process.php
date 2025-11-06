@@ -1,6 +1,6 @@
 <?php
 session_start();
-include "conexao.php";
+include "../includes/conexao.php";
 
 if (!empty($_POST['nome']) && !empty($_POST['senha'])) {
     $nome = trim($_POST['nome']);
@@ -31,3 +31,4 @@ if (!empty($_POST['nome']) && !empty($_POST['senha'])) {
     header("Location: login.php?error=Preencha todos os campos");
     exit;
 }
+

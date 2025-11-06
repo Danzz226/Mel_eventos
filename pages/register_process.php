@@ -1,5 +1,5 @@
 <?php
-include "conexao.php";
+include "../includes/conexao.php";
 
 if (!empty($_POST['nome']) && !empty($_POST['senha']) && !empty($_POST['confirmar_senha'])) {
     $nome = trim($_POST['nome']);
@@ -31,3 +31,4 @@ if (!empty($_POST['nome']) && !empty($_POST['senha']) && !empty($_POST['confirma
 } else {
     header("Location: register.php?msg=Preencha todos os campos");
 }
+

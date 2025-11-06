@@ -1,11 +1,11 @@
 <?php
 session_start();
-include "conexao.php";
-include "classes/ReservaManager.php";
+include "../includes/conexao.php";
+include "../classes/ReservaManager.php";
 
 // Verifica se está logado
 if (!isset($_SESSION['usuario_id'])) {
-    header("Location: login.php");
+    header("Location: ../pages/login.php");
     exit;
 }
 
@@ -29,20 +29,20 @@ $resultado = $reservaManager->atualizarReserva($_POST['id_reserva'], $dados);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $resultado['sucesso'] ? 'Sucesso' : 'Erro' ?> - Mel Eventos</title>
+    <title><?= $resultado['sucesso'] ? 'Sucesso' : 'Erro' ?> - EventHub</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
     <nav class="navbar">
         <div class="container">
             <div class="nav-brand">
-                <h1>🎉 Mel Eventos</h1>
+                <h1>🎉 EventHub</h1>
             </div>
             <ul class="nav-menu">
-                <li><a href="home.php" class="nav-link">Voltar ao Início</a></li>
+                <li><a href="../pages/home.php" class="nav-link">Voltar ao Início</a></li>
                 <li><a href="gerenciar_eventos.php" class="nav-link">Gerenciar Eventos</a></li>
             </ul>
         </div>
@@ -63,10 +63,11 @@ $resultado = $reservaManager->atualizarReserva($_POST['id_reserva'], $dados);
                 
                 <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
                     <a href="gerenciar_eventos.php" class="btn-primary">Voltar para Gerenciar Eventos</a>
-                    <a href="home.php" class="btn-primary" style="background-color: var(--secondary-color); color: var(--text-light);">Voltar ao Início</a>
+                    <a href="../pages/home.php" class="btn-primary" style="background-color: var(--secondary-color); color: var(--text-light);">Voltar ao Início</a>
                 </div>
             </div>
         </div>
     </main>
 </body>
 </html>
+

@@ -1,5 +1,12 @@
 <?php
-include "conexao.php";
+session_start();
+include "../includes/conexao.php";
+
+// Verifica se está logado
+if (!isset($_SESSION['usuario_id'])) {
+    header("Location: ../pages/login.php");
+    exit;
+}
 
 $id = $_GET['id'];
 
@@ -14,20 +21,20 @@ $saloes = $conn->query("SELECT id_salao, nome FROM Salao ORDER BY nome ASC");
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Reserva - Mel Eventos</title>
+    <title>Editar Reserva - EventHub</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
     <nav class="navbar">
         <div class="container">
             <div class="nav-brand">
-                <h1>🎉 Mel Eventos</h1>
+                <h1>🎉 EventHub</h1>
             </div>
             <ul class="nav-menu">
-                <li><a href="home.php" class="nav-link">Voltar ao Início</a></li>
+                <li><a href="../pages/home.php" class="nav-link">Voltar ao Início</a></li>
                 <li><a href="gerenciar_eventos.php" class="nav-link">Gerenciar Eventos</a></li>
             </ul>
         </div>
@@ -94,6 +101,7 @@ $saloes = $conn->query("SELECT id_salao, nome FROM Salao ORDER BY nome ASC");
         </div>
     </main>
 
-    <script src="assets/js/reservas.js"></script>
+    <script src="../assets/js/reservas.js"></script>
 </body>
 </html>
+

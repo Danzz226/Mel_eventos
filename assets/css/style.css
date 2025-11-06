@@ -199,6 +199,7 @@ body {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 2rem;
     margin-top: 2rem;
+    align-items: stretch;
 }
 
 .service-card {
@@ -208,6 +209,12 @@ body {
     text-align: center;
     box-shadow: var(--shadow);
     transition: var(--transition);
+    height: 280px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: none;
+    outline: none;
 }
 
 .service-card:hover {
@@ -217,14 +224,72 @@ body {
 }
 
 .service-icon {
+    border: none !important;
+    border-bottom: none !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 1rem;
+}
+
+.service-card-link {
+    text-decoration: none !important;
+    color: inherit;
+    display: block;
+    height: 100%;
+    cursor: pointer;
+}
+
+.service-card-link:hover {
+    text-decoration: none !important;
+}
+
+.service-card-link:visited,
+.service-card-link:active,
+.service-card-link:focus {
+    text-decoration: none !important;
+    color: inherit;
+    outline: none;
+}
+
+.service-card-link * {
+    text-decoration: none !important;
+}
+
+.service-card-link:hover * {
+    text-decoration: none !important;
+}
+
+.btn-contact {
+    background-color: var(--secondary-color) !important;
+    color: var(--text-light) !important;
+}
+
+.btn-contact:hover {
+    background-color: #1a1a2e !important;
+    color: var(--text-light) !important;
+}
+
+.service-icon {
     font-size: 3rem;
     margin-bottom: 1rem;
+    border: none !important;
+    border-bottom: none !important;
+    padding-bottom: 0 !important;
+    display: block;
 }
 
 .service-card h3 {
     font-size: 1.25rem;
     margin-bottom: 1rem;
     color: var(--secondary-color);
+    text-decoration: none;
+    border: none;
+    border-bottom: none;
+}
+
+.service-card p {
+    text-decoration: none;
+    border: none;
+    border-bottom: none;
 }
 
 /* Contato */
@@ -470,8 +535,8 @@ body {
     text-decoration: none;
     font-size: 0.9rem;
     font-weight: 500;
-    margin-right: 0.5rem;
     transition: var(--transition);
+    box-sizing: border-box;
 }
 
 .btn-edit {
