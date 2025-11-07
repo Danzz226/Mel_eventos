@@ -209,7 +209,7 @@ body {
     text-align: center;
     box-shadow: var(--shadow);
     transition: var(--transition);
-    height: 280px;
+    height: 300px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;

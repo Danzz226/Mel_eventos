@@ -89,7 +89,7 @@ $usuario_nome = $_SESSION['usuario_nome'];
                     <div class="service-card">
                         <div class="service-icon">📅</div>
                         <h3>Planejamento de Eventos</h3>
-                        <p>Gerencie datas, horários e detalhes do seu evento de forma simples e organizada.</p>
+                        <p >Gerencie detalhes de forma simples e organizada.</p>
                     </div>
                 </a>
                 <a href="../services/calculo.php" class="service-card-link">
@@ -103,7 +103,7 @@ $usuario_nome = $_SESSION['usuario_nome'];
                     <div class="service-card">
                         <div class="service-icon">📊</div>
                         <h3>Gestão Completa</h3>
-                        <p>Acompanhe todas as suas reservas, edite informações e mantenha tudo organizado.</p>
+                        <p>Acompanhe todas as suas reservas, e mantenha tudo organizado.</p>
                     </div>
                 </a>
             </div>
