@@ -45,7 +45,7 @@ $saloes = $conn->query("SELECT id_salao, nome FROM Salao ORDER BY nome ASC");
             <h1 class="page-title">Editar Reserva</h1>
             
             <section class="form-section">
-                <form action="update_reserva.php" method="post" class="form-reserva">
+                <form action="update_reserva.php" method="post" id="formReserva" class="form-reserva">
                     <input type="hidden" name="id_reserva" value="<?= $reserva['id_reserva'] ?>">
 
                     <div class="form-group">
@@ -67,7 +67,7 @@ $saloes = $conn->query("SELECT id_salao, nome FROM Salao ORDER BY nome ASC");
                     <div class="form-group">
                         <label for="data_evento_fim">Data Fim</label>
                         <input type="datetime-local" name="data_evento_fim" id="data_evento_fim" value="<?= $reserva['data_evento_fim'] ? date('Y-m-d\TH:i', strtotime($reserva['data_evento_fim'])) : '' ?>" required>
-                        <div id="erroData" class="error-message" style="display:none;">⚠️ A data de fim não pode ser menor que a de início!</div>
+                        <div id="erroData" class="error-message" style="display:none;">⚠ A data de fim não pode ser menor que a de início!</div>
                     </div>
 
                     <div class="form-group">
@@ -83,6 +83,7 @@ $saloes = $conn->query("SELECT id_salao, nome FROM Salao ORDER BY nome ASC");
                     <div class="form-group">
                         <label for="total_previsto">Total Previsto (R$)</label>
                         <input type="number" step="0.01" name="total_previsto" id="total_previsto" value="<?= $reserva['total_previsto'] ?>" readonly>
+                        <small style="color: #666; font-size: 0.9rem;">O valor é calculado automaticamente com base nas informações da reserva.</small>
                     </div>
 
                     <div class="form-group">
@@ -104,4 +105,3 @@ $saloes = $conn->query("SELECT id_salao, nome FROM Salao ORDER BY nome ASC");
     <script src="../assets/js/reservas.js"></script>
 </body>
 </html>
-
