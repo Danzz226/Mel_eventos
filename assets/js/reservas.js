@@ -1,107 +1,144 @@
-<?php
-session_start();
-include "../includes/conexao.php";
+/**
+ * JavaScript para validação e cálculos de reservas
+ */
+document.addEventListener('DOMContentLoaded', function() {
+    const inicio = document.getElementById("data_evento_inicio");
+    const fim = document.getElementById("data_evento_fim");
+    const erroData = document.getElementById("erroData");
+    const formReserva = document.getElementById("formReserva");
 
-// Verifica se está logado
-if (!isset($_SESSION['usuario_id'])) {
-    header("Location: ../pages/login.php");
-    exit;
-}
+    // Validação de datas
+    if (inicio && fim && erroData) {
+        inicio.addEventListener("change", () => {
+            fim.min = inicio.value;
+            validarDatas();
+        });
 
-$id = $_GET['id'];
+        fim.addEventListener("change", validarDatas);
 
-$sql = "SELECT r.*, s.nome AS salao_nome FROM Reserva r JOIN Salao s ON r.id_salao = s.id_salao WHERE r.id_reserva = $id";
-$result = $conn->query($sql);
-$reserva = $result->fetch_assoc();
+        function validarDatas() {
+            if (inicio.value && fim.value && fim.value < inicio.value) {
+                erroData.style.display = "block";
+                erroData.style.color = "#dc3545";
+                fim.value = "";
+                fim.style.borderColor = "#dc3545";
+            } else {
+                erroData.style.display = "none";
+                if (fim) fim.style.borderColor = "";
+            }
+        }
+    }
 
-$saloes = $conn->query("SELECT id_salao, nome FROM Salao ORDER BY nome ASC");
-?>
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Reserva - EventHub</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../assets/css/style.css">
-</head>
-<body>
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-brand">
-                <h1>🎉 EventHub</h1>
-            </div>
-            <ul class="nav-menu">
-                <li><a href="../pages/home.php" class="nav-link">Voltar ao Início</a></li>
-                <li><a href="gerenciar_eventos.php" class="nav-link">Gerenciar Eventos</a></li>
-            </ul>
-        </div>
-    </nav>
+    // Cálculo do total
+    function calcularTotal() {
+        let convidados = parseInt(document.getElementById("numero_participantes_est")?.value) || 0;
+        let dataInicio = inicio ? new Date(inicio.value) : null;
+        let dataFim = fim ? new Date(fim.value) : null;
+        let dias = 1;
 
-    <main class="main-content">
-        <div class="container">
-            <h1 class="page-title">Editar Reserva</h1>
+        if (dataInicio && dataFim && !isNaN(dataInicio) && !isNaN(dataFim) && dataFim > dataInicio) {
+            let diff = Math.ceil((dataFim - dataInicio) / (1000 * 60 * 60 * 24));
+            dias = diff > 0 ? diff + 1 : 1;
+        }
+
+        let total = 0;
+
+        // Calcular serviços extras
+        document.querySelectorAll('input[name="servicos[]"]:checked').forEach(serv => {
+            let preco = parseFloat(serv.getAttribute("data-preco"));
+            if (serv.value === "buffet") {
+                total += preco * convidados;
+            } else {
+                total += preco;
+            }
+        });
+
+        // Valor base do salão (R$ 2000 por dia)
+        total += 2000 * dias;
+        
+        // Custo adicional por convidado (R$ 10 por pessoa)
+        total += convidados * 10;
+
+        const totalElement = document.getElementById("total");
+        const totalPrevisto = document.getElementById("total_previsto");
+        
+        if (totalElement) {
+            totalElement.innerText = total.toFixed(2);
+        }
+        
+        if (totalPrevisto) {
+            totalPrevisto.value = total.toFixed(2);
+        }
+    }
+
+    // Atualizar total quando houver mudanças
+    if (formReserva) {
+        formReserva.addEventListener("input", calcularTotal);
+        formReserva.addEventListener("change", calcularTotal);
+        
+        // Calcular total inicial
+        calcularTotal();
+    }
+
+    // Validação do formulário antes de enviar
+    if (formReserva) {
+        formReserva.addEventListener("submit", function(e) {
+            const totalPrevisto = document.getElementById("total_previsto");
             
-            <section class="form-section">
-                <form action="update_reserva.php" method="post" id="formReserva" class="form-reserva">
-                    <input type="hidden" name="id_reserva" value="<?= $reserva['id_reserva'] ?>">
+            // Validar datas
+            if (inicio && fim && inicio.value && fim.value) {
+                const dataInicio = new Date(inicio.value);
+                const dataFim = new Date(fim.value);
+                
+                if (dataFim <= dataInicio) {
+                    e.preventDefault();
+                    alert("⚠️ A data de fim deve ser maior que a data de início!");
+                    return false;
+                }
+            }
+            
+            // Validar total (apenas se o campo existir e estiver vazio ou inválido)
+            if (totalPrevisto) {
+                const totalValue = parseFloat(totalPrevisto.value);
+                if (isNaN(totalValue) || totalValue <= 0) {
+                    e.preventDefault();
+                    alert("⚠️ Por favor, verifique os dados da reserva! O valor total deve ser maior que zero.");
+                    return false;
+                }
+            }
+            
+            // Mostrar feedback visual
+            const btnSubmit = formReserva.querySelector('.btn-submit');
+            if (btnSubmit) {
+                btnSubmit.textContent = "Processando...";
+                btnSubmit.disabled = true;
+            }
+        });
+    }
 
-                    <div class="form-group">
-                        <label for="id_salao">Salão</label>
-                        <select name="id_salao" id="id_salao" required>
-                            <?php while($s = $saloes->fetch_assoc()): ?>
-                                <option value="<?= $s['id_salao'] ?>" <?= $s['id_salao'] == $reserva['id_salao'] ? "selected" : "" ?>>
-                                    <?= $s['nome'] ?>
-                                </option>
-                            <?php endwhile; ?>
-                        </select>
-                    </div>
+    // Adicionar efeitos visuais aos inputs
+    const inputs = document.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.classList.add('focused');
+        });
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.classList.remove('focused');
+        });
+    });
 
-                    <div class="form-group">
-                        <label for="data_evento_inicio">Data Início</label>
-                        <input type="datetime-local" name="data_evento_inicio" id="data_evento_inicio" value="<?= date('Y-m-d\TH:i', strtotime($reserva['data_evento_inicio'])) ?>" required>
-                    </div>
+    // Animar tabela ao carregar
+    const tableRows = document.querySelectorAll('.table-reservas tbody tr');
+    tableRows.forEach((row, index) => {
+        row.style.opacity = '0';
+        row.style.transform = 'translateX(-20px)';
+        row.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        
+        setTimeout(() => {
+            row.style.opacity = '1';
+            row.style.transform = 'translateX(0)';
+        }, index * 100);
+    });
+});
 
-                    <div class="form-group">
-                        <label for="data_evento_fim">Data Fim</label>
-                        <input type="datetime-local" name="data_evento_fim" id="data_evento_fim" value="<?= $reserva['data_evento_fim'] ? date('Y-m-d\TH:i', strtotime($reserva['data_evento_fim'])) : '' ?>" required>
-                        <div id="erroData" class="error-message" style="display:none;">⚠ A data de fim não pode ser menor que a de início!</div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="numero_participantes_est">Número de Participantes</label>
-                        <input type="number" name="numero_participantes_est" id="numero_participantes_est" value="<?= $reserva['numero_participantes_est'] ?>" min="1" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="observacoes">Observações</label>
-                        <textarea name="observacoes" id="observacoes" rows="4"><?= htmlspecialchars($reserva['observacoes'] ?? '') ?></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="total_previsto">Total Previsto (R$)</label>
-                        <input type="number" step="0.01" name="total_previsto" id="total_previsto" value="<?= $reserva['total_previsto'] ?>" readonly>
-                        <small style="color: #666; font-size: 0.9rem;">O valor é calculado automaticamente com base nas informações da reserva.</small>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="status">Status</label>
-                        <select name="status" id="status" required>
-                            <option value="pendente" <?= $reserva['status'] == "pendente" ? "selected" : "" ?>>Pendente</option>
-                            <option value="confirmada" <?= $reserva['status'] == "confirmada" ? "selected" : "" ?>>Confirmada</option>
-                            <option value="cancelada" <?= $reserva['status'] == "cancelada" ? "selected" : "" ?>>Cancelada</option>
-                            <option value="concluida" <?= $reserva['status'] == "concluida" ? "selected" : "" ?>>Concluída</option>
-                        </select>
-                    </div>
-
-                    <button type="submit" class="btn-submit">Salvar Alterações</button>
-                </form>
-            </section>
-        </div>
-    </main>
-
-    <script src="../assets/js/reservas.js"></script>
-</body>
-</html>
