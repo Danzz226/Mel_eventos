@@ -7,7 +7,7 @@ Sistema completo de gerenciamento de reservas de eventos com área administrativ
 ### Organização de Pastas
 
 ```
-Mel_eventos/
+EventHub/
 ├── pages/              # Páginas principais do sistema
 │   ├── home.php        # Página inicial com navegação
 │   ├── login.php       # Página de login
