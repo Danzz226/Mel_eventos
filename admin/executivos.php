@@ -51,6 +51,39 @@ if (!isset($_SESSION['admin_autenticado']) || $_SESSION['admin_autenticado'] !==
             <h1 class="page-title">👔 Área Executiva</h1>
             <p style="text-align: center; color: #666; margin-bottom: 2rem;">Gerencie todas as reservas do sistema</p>
             
+
+            <!-- Estatísticas -->
+            <?php
+            $total_reservas = $conn->query("SELECT COUNT(*) as total FROM Reserva")->fetch_assoc()['total'];
+            $reservas_pendentes = $conn->query("SELECT COUNT(*) as total FROM Reserva WHERE status = 'pendente'")->fetch_assoc()['total'];
+            $reservas_confirmadas = $conn->query("SELECT COUNT(*) as total FROM Reserva WHERE status = 'confirmada'")->fetch_assoc()['total'];
+            $total_receita = $conn->query("SELECT SUM(total_previsto) as total FROM Reserva WHERE status IN ('confirmada', 'concluida')")->fetch_assoc()['total'] ?? 0;
+            ?>
+            <section class="form-section" style="margin-top: 2rem;">
+                <h2>📊 Estatísticas</h2>
+                <div class="services-grid" style="margin-top: 1rem;">
+                    <div class="service-card">
+                        <div class="service-icon">📋</div>
+                        <h3>Total de Reservas</h3>
+                        <p style="font-size: 2rem; font-weight: bold; color: var(--secondary-color);"><?= $total_reservas ?></p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">⏳</div>
+                        <h3>Pendentes</h3>
+                        <p style="font-size: 2rem; font-weight: bold; color: #ffc107;"><?= $reservas_pendentes ?></p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">✅</div>
+                        <h3>Confirmadas</h3>
+                        <p style="font-size: 2rem; font-weight: bold; color: #28a745;"><?= $reservas_confirmadas ?></p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">💰</div>
+                        <h3>Receita Total</h3>
+                        <p style="font-size: 1.5rem; font-weight: bold; color: var(--secondary-color);">R$ <?= number_format($total_receita, 2, ',', '.') ?></p>
+                    </div>
+                </div>
+            </section>
             <!-- Listagem de Reservas -->
             <section class="list-section">
                 <h2>Todas as Reservas</h2>
@@ -114,39 +147,6 @@ if (!isset($_SESSION['admin_autenticado']) || $_SESSION['admin_autenticado'] !==
                             ?>
                         </tbody>
                     </table>
-                </div>
-            </section>
-
-            <!-- Estatísticas -->
-            <?php
-            $total_reservas = $conn->query("SELECT COUNT(*) as total FROM Reserva")->fetch_assoc()['total'];
-            $reservas_pendentes = $conn->query("SELECT COUNT(*) as total FROM Reserva WHERE status = 'pendente'")->fetch_assoc()['total'];
-            $reservas_confirmadas = $conn->query("SELECT COUNT(*) as total FROM Reserva WHERE status = 'confirmada'")->fetch_assoc()['total'];
-            $total_receita = $conn->query("SELECT SUM(total_previsto) as total FROM Reserva WHERE status IN ('confirmada', 'concluida')")->fetch_assoc()['total'] ?? 0;
-            ?>
-            <section class="form-section" style="margin-top: 2rem;">
-                <h2>📊 Estatísticas</h2>
-                <div class="services-grid" style="margin-top: 1rem;">
-                    <div class="service-card">
-                        <div class="service-icon">📋</div>
-                        <h3>Total de Reservas</h3>
-                        <p style="font-size: 2rem; font-weight: bold; color: var(--secondary-color);"><?= $total_reservas ?></p>
-                    </div>
-                    <div class="service-card">
-                        <div class="service-icon">⏳</div>
-                        <h3>Pendentes</h3>
-                        <p style="font-size: 2rem; font-weight: bold; color: #ffc107;"><?= $reservas_pendentes ?></p>
-                    </div>
-                    <div class="service-card">
-                        <div class="service-icon">✅</div>
-                        <h3>Confirmadas</h3>
-                        <p style="font-size: 2rem; font-weight: bold; color: #28a745;"><?= $reservas_confirmadas ?></p>
-                    </div>
-                    <div class="service-card">
-                        <div class="service-icon">💰</div>
-                        <h3>Receita Total</h3>
-                        <p style="font-size: 1.5rem; font-weight: bold; color: var(--secondary-color);">R$ <?= number_format($total_receita, 2, ',', '.') ?></p>
-                    </div>
                 </div>
             </section>
         </div>

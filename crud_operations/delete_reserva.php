@@ -39,6 +39,7 @@ $resultado = $reservaManager->excluirReserva($id);
             </div>
             <ul class="nav-menu">
                 <li><a href="../pages/home.php" class="nav-link">Voltar ao Início</a></li>
+                
                 <li><a href="gerenciar_eventos.php" class="nav-link">Gerenciar Eventos</a></li>
             </ul>
         </div>
@@ -58,7 +59,10 @@ $resultado = $reservaManager->excluirReserva($id);
                 <?php endif; ?>
                 
                 <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                    <a href="gerenciar_eventos.php" class="btn-primary">Voltar para Gerenciar Eventos</a>
+                    <?php if (isset($_SESSION['admin_autenticado']) && $_SESSION['admin_autenticado'] === true): ?>
+                        <a href="../admin/executivos.php" class="btn-primary">👔 Voltar para Área Executiva</a>
+                    <?php endif; ?>
+                    <a href="gerenciar_eventos.php" class="btn-primary">Gerenciar Eventos</a>
                     <a href="../pages/home.php" class="btn-primary" style="background-color: var(--secondary-color); color: var(--text-light);">Voltar ao Início</a>
                 </div>
             </div>

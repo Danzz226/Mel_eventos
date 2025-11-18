@@ -44,6 +44,11 @@ if ($saloes->num_rows == 0) {
             </div>
             <ul class="nav-menu">
                 <li><a href="../pages/home.php" class="nav-link">Voltar ao Início</a></li>
+                <?php if (isset($_SESSION['admin_autenticado']) && $_SESSION['admin_autenticado'] === true): ?>
+                    <li><a href="../admin/executivos.php" class="nav-link" style="color: var(--primary-color); font-weight: 600;">👔 Minha Área</a></li>
+                <?php else: ?>
+                    <li><a href="../admin/login.php" class="nav-link" style="color: var(--primary-color); font-weight: 600;">🔐 Login Admin</a></li>
+                <?php endif; ?>
                 <li class="user-info">
                     <span>👤 <?= htmlspecialchars($usuario_nome) ?></span>
                     <a href="../pages/logout.php" class="btn-logout">Sair</a>
@@ -125,17 +130,6 @@ if ($saloes->num_rows == 0) {
 
                     <button type="submit" class="btn-submit">Confirmar Reserva</button>
                 </form>
-            </section>
-
-            <!-- Área Executiva -->
-            <section class="form-section" style="margin-top: 2rem;">
-                <h2>👔 Área Executiva</h2>
-                <div style="text-align: center; padding: 1.5rem;">
-                    <p style="margin-bottom: 1.5rem; color: var(--secondary-color);">
-                        Acesse a área executiva para visualizar, editar e gerenciar todas as reservas do sistema.
-                    </p>
-                    <a href="../admin/login.php" class="btn-primary" style="display: inline-block; padding: 1rem 2.5rem; font-size: 1.1rem;">Acessar Área Executiva</a>
-                </div>
             </section>
         </div>
     </main>

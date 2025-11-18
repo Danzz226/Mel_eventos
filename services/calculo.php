@@ -30,6 +30,11 @@ $usuario_nome = $_SESSION['usuario_nome'];
             <ul class="nav-menu">
                 <li><a href="../pages/home.php" class="nav-link">Voltar ao Início</a></li>
                 <li><a href="../crud_operations/gerenciar_eventos.php" class="nav-link">Gerenciar Eventos</a></li>
+                <?php if (isset($_SESSION['admin_autenticado']) && $_SESSION['admin_autenticado'] === true): ?>
+                    <li><a href="../admin/executivos.php" class="nav-link" style="color: var(--primary-color); font-weight: 600;">👔 Minha Área</a></li>
+                <?php else: ?>
+                    <li><a href="../admin/login.php" class="nav-link" style="color: var(--primary-color); font-weight: 600;">🔐 Login Admin</a></li>
+                <?php endif; ?>
                 <li class="user-info">
                     <span>👤 <?= htmlspecialchars($usuario_nome) ?></span>
                     <a href="../pages/logout.php" class="btn-logout">Sair</a>

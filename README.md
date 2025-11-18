@@ -1,72 +1,160 @@
-# Sistema de Reservas - Mel Eventos
+# Sistema de Reservas - EventHub
 
-Sistema simplificado de gerenciamento de reservas de eventos, baseado no padrão CRUD simples.
+Sistema completo de gerenciamento de reservas de eventos com área administrativa, baseado no padrão CRUD com encapsulamento e validações.
 
-## Estrutura do Projeto
+## 📁 Estrutura do Projeto
 
-### Arquivos Principais
-- `index.php` - Página principal com formulário de nova reserva e listagem
-- `conexao.php` - Arquivo de conexão com o banco de dados
-- `login.php` - Página de login
-- `register.php` - Página de cadastro
-- `logout.php` - Logout do sistema
+### Organização de Pastas
 
-### CRUD de Reservas
-- `create_reserva.php` - Criar nova reserva
-- `edit_reserva.php` - Editar reserva existente
-- `update_reserva.php` - Atualizar reserva
-- `delete_reserva.php` - Excluir reserva
+```
+Mel_eventos/
+├── pages/              # Páginas principais do sistema
+│   ├── home.php        # Página inicial com navegação
+│   ├── login.php       # Página de login
+│   ├── register.php    # Página de cadastro
+│   ├── login_process.php
+│   ├── register_process.php
+│   └── logout.php
+│
+├── admin/              # Área administrativa
+│   ├── login.php       # Login administrativo
+│   ├── login_process.php
+│   ├── logout.php      # Logout admin
+│   └── executivos.php  # Painel administrativo
+│
+├── crud_operations/   # Operações CRUD
+│   ├── gerenciar_eventos.php  # Formulário de criação
+│   ├── create_reserva.php     # Criar reserva
+│   ├── edit_reserva.php       # Editar reserva
+│   ├── update_reserva.php     # Atualizar reserva
+│   └── delete_reserva.php     # Excluir reserva
+│
+├── services/           # Páginas de serviços
+│   ├── saloes.php
+│   ├── planejamento.php
+│   ├── calculo.php
+│   └── gestao.php
+│
+├── includes/           # Arquivos de configuração
+│   └── conexao.php     # Conexão com banco de dados
+│
+├── classes/            # Classes PHP
+│   └── ReservaManager.php  # Classe com encapsulamento
+│
+├── assets/             # Recursos estáticos
+│   ├── css/
+│   │   └── style.css  # Estilos principais
+│   └── js/
+│       ├── main.js    # JavaScript geral
+│       └── reservas.js # Validações e cálculos
+│
+├── index.php          # Redirecionador principal
+└── crud_eventos.sql   # Script do banco de dados
+```
 
-### Arquivos de Processamento
-- `login_process.php` - Processar login
-- `register_process.php` - Processar cadastro
+## 🎯 Características
 
-### Frontend
-- `crud/style.css` - Estilos CSS clássicos e profissionais
-- `crud/style2.css` - Estilos CSS modernos com efeitos visuais avançados
-- `js/reservas.js` - JavaScript para validações e cálculos
-
-## Características
-
-✅ **Simplicidade**: Baseado no padrão da pasta "crud professor"  
-✅ **Dois Estilos Disponíveis**: CSS clássico e profissional com efeitos visuais  
-✅ **JavaScript Separado**: Lógica frontend em arquivo dedicado  
-✅ **Fácil Manutenção**: Estrutura simples e organizada  
+✅ **Estrutura Organizada**: Arquivos separados por funcionalidade  
+✅ **Área Administrativa**: Login separado para administradores  
+✅ **Encapsulamento**: Classe ReservaManager com métodos privados  
+✅ **Validações**: Validação de dados no front-end e back-end  
+✅ **Design Moderno**: Cores personalizadas (#DEEB50 e #000004)  
+✅ **Google Fonts**: Fonte Poppins integrada  
 ✅ **Responsivo**: Design adaptável para diferentes telas  
-✅ **Efeitos Visuais**: Gradientes, animações e glassmorphism no style2.css  
+✅ **Navegação Intuitiva**: Menu com acesso rápido à área admin  
 
-## Como Usar
+## 🚀 Como Usar
 
-### Versão Clássica (style.css)
-1. Acesse `login.php` para fazer login
-2. Na página principal (`index.php`) você pode:
-   - Criar novas reservas
-   - Visualizar todas as suas reservas
-   - Editar reservas existentes
+### 1. Configuração Inicial
+
+1. Importe o banco de dados `crud_eventos.sql` no MySQL/MariaDB
+2. Configure a conexão em `includes/conexao.php` se necessário
+3. Acesse `index.php` no navegador
+
+### 2. Fluxo de Uso
+
+#### Usuário Regular:
+1. Acesse `pages/login.php` para fazer login
+2. Na página inicial (`pages/home.php`):
+   - Navegue pelas seções (Início, Sobre, Serviços, Contato)
+   - Clique em "Gerenciar Eventos" para criar reservas
+   - Use "Login Admin" no menu para acessar área administrativa
+
+#### Administrador:
+1. Faça login como usuário regular
+2. Clique em "Login Admin" no menu (credenciais: `admin`/`admin`)
+3. Acesse a "Área Executiva" para:
+   - Visualizar todas as reservas
+   - Editar reservas
    - Excluir reservas
+   - Ver estatísticas do sistema
 
-### Versão Profissional (style2.css)
-1. Acesse `login_profissional.php` para fazer login
-2. Na página principal (`index_profissional.php`) você pode:
-   - Criar novas reservas com efeitos visuais
-   - Visualizar reservas com design moderno
-   - Editar reservas com animações fluidas
-   - Excluir reservas com confirmações elegantes
+### 3. Navegação Admin
 
-### Comparação de Estilos
-- Acesse `comparacao_estilos.php` para ver as diferenças entre os dois estilos
+- **Menu Principal**: Botão "Minha Área" aparece quando autenticado como admin
+- **Após Alterações**: Botões para voltar à Área Executiva ou Gerenciar Eventos
+- **Logout Admin**: Mantém sessão de usuário, apenas remove autenticação admin
 
-## Banco de Dados
+## 🗄️ Banco de Dados
 
-O sistema utiliza as tabelas:
-- `usuario` - Usuários do sistema
-- `Salao` - Salões disponíveis
-- `Reserva` - Reservas de eventos
+### Tabelas Principais
 
-## Tecnologias
+- **`usuario`**: Usuários do sistema
+- **`Salao`**: Salões disponíveis (com `capacidade_max`)
+- **`Reserva`**: Reservas de eventos
 
-- PHP 7.4+
-- MySQL/MariaDB
-- HTML5
-- CSS3
-- JavaScript ES6+
+### Estrutura da Tabela Salao
+
+```sql
+CREATE TABLE Salao (
+  id_salao INT PRIMARY KEY AUTO_INCREMENT,
+  nome VARCHAR(255),
+  descricao TEXT,
+  capacidade_max INT,  -- Capacidade máxima de pessoas
+  status ENUM('ativo', 'manutencao', 'inativo'),
+  ...
+);
+```
+
+## 🎨 Tecnologias Utilizadas
+
+- **Back-end**: PHP 7.4+ com classes e objetos
+- **Banco de Dados**: MySQL/MariaDB
+- **Front-end**: HTML5 semântico, CSS3, JavaScript ES6+
+- **Fontes**: Google Fonts (Poppins)
+- **Padrões**: CRUD completo, encapsulamento, validações
+
+## 📝 Requisitos Atendidos
+
+### Front-end
+✅ HTML5 semântico  
+✅ CSS3 nativo  
+✅ Google Fonts (Poppins)  
+✅ Background da página  
+✅ Interações com JavaScript  
+✅ Navegação clara e intuitiva  
+✅ Formulários funcionais (label e input)  
+✅ Interação com usuário (botões, links)  
+✅ Exibição correta de conteúdo  
+
+### Back-end
+✅ Listagem de dados do banco  
+✅ Inclusão de registros via PHP  
+✅ Exclusão de registros via PHP  
+✅ Alteração de dados via PHP  
+✅ Requisições POST/GET  
+✅ Funções  
+✅ Validação de dados  
+✅ Classes e Objetos com encapsulamento  
+
+## 🔐 Credenciais Padrão
+
+- **Admin**: `admin` / `admin`
+- **Usuários**: Criados através do sistema de registro
+
+## 📌 Notas Importantes
+
+- A área executiva requer login administrativo separado
+- O sistema valida datas e calcula totais automaticamente
+- Todas as operações CRUD passam pela classe ReservaManager
+- O design utiliza cores personalizadas (#DEEB50 e #000004)

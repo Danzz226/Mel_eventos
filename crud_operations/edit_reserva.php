@@ -35,6 +35,11 @@ $saloes = $conn->query("SELECT id_salao, nome FROM Salao ORDER BY nome ASC");
             </div>
             <ul class="nav-menu">
                 <li><a href="../pages/home.php" class="nav-link">Voltar ao Início</a></li>
+                <?php if (isset($_SESSION['admin_autenticado']) && $_SESSION['admin_autenticado'] === true): ?>
+                    <li><a href="../admin/executivos.php" class="nav-link" style="color: var(--primary-color); font-weight: 600;">👔 Minha Área</a></li>
+                <?php else: ?>
+                    <li><a href="../admin/login.php" class="nav-link" style="color: var(--primary-color); font-weight: 600;">🔐 Login Admin</a></li>
+                <?php endif; ?>
                 <li><a href="gerenciar_eventos.php" class="nav-link">Gerenciar Eventos</a></li>
             </ul>
         </div>
@@ -67,7 +72,7 @@ $saloes = $conn->query("SELECT id_salao, nome FROM Salao ORDER BY nome ASC");
                     <div class="form-group">
                         <label for="data_evento_fim">Data Fim</label>
                         <input type="datetime-local" name="data_evento_fim" id="data_evento_fim" value="<?= $reserva['data_evento_fim'] ? date('Y-m-d\TH:i', strtotime($reserva['data_evento_fim'])) : '' ?>" required>
-                        <div id="erroData" class="error-message" style="display:none;">⚠ A data de fim não pode ser menor que a de início!</div>
+                        <div id="erroData" class="error-message" style="display:none;">⚠️ A data de fim não pode ser menor que a de início!</div>
                     </div>
 
                     <div class="form-group">
@@ -76,14 +81,32 @@ $saloes = $conn->query("SELECT id_salao, nome FROM Salao ORDER BY nome ASC");
                     </div>
 
                     <div class="form-group">
+                        <label>Serviços Extras:</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="servicos[]" value="buffet" data-preco="50">
+                                Buffet (R$ 50 por convidado)
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="servicos[]" value="decoracao" data-preco="1000">
+                                Decoração (R$ 1.000 fixo)
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="servicos[]" value="som" data-preco="800">
+                                Som e Iluminação (R$ 800 fixo)
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="observacoes">Observações</label>
                         <textarea name="observacoes" id="observacoes" rows="4"><?= htmlspecialchars($reserva['observacoes'] ?? '') ?></textarea>
                     </div>
 
-                    <div class="form-group">
-                        <label for="total_previsto">Total Previsto (R$)</label>
-                        <input type="number" step="0.01" name="total_previsto" id="total_previsto" value="<?= $reserva['total_previsto'] ?>" readonly>
-                        <small style="color: #666; font-size: 0.9rem;">O valor é calculado automaticamente com base nas informações da reserva.</small>
+                    <input type="hidden" name="total_previsto" id="total_previsto" value="<?= $reserva['total_previsto'] ?>">
+
+                    <div class="total-display">
+                        <strong>Total Previsto: R$ <span id="total"><?= number_format($reserva['total_previsto'], 2, '.', '') ?></span></strong>
                     </div>
 
                     <div class="form-group">
@@ -105,3 +128,4 @@ $saloes = $conn->query("SELECT id_salao, nome FROM Salao ORDER BY nome ASC");
     <script src="../assets/js/reservas.js"></script>
 </body>
 </html>
+

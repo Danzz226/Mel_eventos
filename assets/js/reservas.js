@@ -31,21 +31,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Cálculo do total
     function calcularTotal() {
-        let convidados = parseInt(document.getElementById("numero_participantes_est")?.value) || 0;
-        let dataInicio = inicio ? new Date(inicio.value) : null;
-        let dataFim = fim ? new Date(fim.value) : null;
+        const inputParticipantes = document.getElementById("numero_participantes_est");
+        let convidados = inputParticipantes ? parseInt(inputParticipantes.value) || 0 : 0;
+        
+        let dataInicio = inicio && inicio.value ? new Date(inicio.value) : null;
+        let dataFim = fim && fim.value ? new Date(fim.value) : null;
         let dias = 1;
 
         if (dataInicio && dataFim && !isNaN(dataInicio) && !isNaN(dataFim) && dataFim > dataInicio) {
             let diff = Math.ceil((dataFim - dataInicio) / (1000 * 60 * 60 * 24));
             dias = diff > 0 ? diff + 1 : 1;
+        } else if (dataInicio && dataFim && !isNaN(dataInicio) && !isNaN(dataFim) && dataFim.getTime() === dataInicio.getTime()) {
+            // Mesmo dia
+            dias = 1;
         }
 
         let total = 0;
 
         // Calcular serviços extras
         document.querySelectorAll('input[name="servicos[]"]:checked').forEach(serv => {
-            let preco = parseFloat(serv.getAttribute("data-preco"));
+            let preco = parseFloat(serv.getAttribute("data-preco")) || 0;
             if (serv.value === "buffet") {
                 total += preco * convidados;
             } else {
@@ -73,11 +78,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Atualizar total quando houver mudanças
     if (formReserva) {
+        // Event listeners para recalcular
         formReserva.addEventListener("input", calcularTotal);
         formReserva.addEventListener("change", calcularTotal);
         
-        // Calcular total inicial
-        calcularTotal();
+        // Recalcular quando mudar datas
+        if (inicio) {
+            inicio.addEventListener("change", calcularTotal);
+        }
+        if (fim) {
+            fim.addEventListener("change", calcularTotal);
+        }
+        
+        // Recalcular quando mudar número de participantes
+        const inputParticipantes = document.getElementById("numero_participantes_est");
+        if (inputParticipantes) {
+            inputParticipantes.addEventListener("input", calcularTotal);
+            inputParticipantes.addEventListener("change", calcularTotal);
+        }
+        
+        // Recalcular quando mudar serviços extras
+        document.querySelectorAll('input[name="servicos[]"]').forEach(checkbox => {
+            checkbox.addEventListener("change", calcularTotal);
+        });
+        
+        // Calcular total inicial após um pequeno delay para garantir que todos os elementos estão carregados
+        setTimeout(calcularTotal, 100);
     }
 
     // Validação do formulário antes de enviar
@@ -97,14 +123,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
             
-            // Validar total (apenas se o campo existir e estiver vazio ou inválido)
-            if (totalPrevisto) {
-                const totalValue = parseFloat(totalPrevisto.value);
-                if (isNaN(totalValue) || totalValue <= 0) {
-                    e.preventDefault();
-                    alert("⚠️ Por favor, verifique os dados da reserva! O valor total deve ser maior que zero.");
-                    return false;
-                }
+            // Validar total
+            if (totalPrevisto && (!totalPrevisto.value || parseFloat(totalPrevisto.value) <= 0)) {
+                e.preventDefault();
+                alert("⚠️ Por favor, selecione ao menos um serviço ou verifique os dados!");
+                return false;
             }
             
             // Mostrar feedback visual
